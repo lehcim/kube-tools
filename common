@@ -67,12 +67,14 @@ function common_install() {
 
     add-apt-repository --yes "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/$(lsb_release -a 2> /dev/null|grep "Distributor ID:"|cut -d$'\t' -f2|tr '[:upper:]' '[:lower:]') $(lsb_release -cs) stable"
     display_message_result "Adding docker package repository"
-
-    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -  > /dev/null 2>&1
+   
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg > /dev/null 2>&1
     display_message_result "Adding google package repository signature"
+    chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
-    echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list > /dev/null
+    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list > /dev/null
     display_message_result "Adding google package repository"
+    chmod 644 /etc/apt/sources.list.d/kubernetes.list
 
     apt update  > /dev/null 2>&1
     display_message_result "Updating package repository"
