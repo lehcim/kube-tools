@@ -61,6 +61,8 @@ function common_install() {
     apt install -y curl gnupg2 software-properties-common apt-transport-https ca-certificates > /dev/null 2>&1
     display_message_result "Installing base needed packages"
 
+    mkdir -p /etc/apt/keyrings
+
     rm -f /etc/apt/trusted.gpg.d/docker.gpg 
     curl -fsSL "https://download.docker.com/linux/$(lsb_release -a 2> /dev/null|grep 'Distributor ID:'|cut -d$'\t' -f2|tr '[:upper:]' '[:lower:]')/gpg" | gpg --dearmour -o /etc/apt/trusted.gpg.d/docker.gpg 
     display_message_result "Adding docker package repository signature"
