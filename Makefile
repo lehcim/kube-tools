@@ -1,31 +1,33 @@
+SCRIPTS = km kc kw klb
+INLINES = $(patsubst %,build/%.sh,$(SCRIPTS))
+BINS = $(patsubst %.sh,%,$(INLINES))
+MANS = $(patsubst %,debian/%.1,$(SCRIPTS))
+TARGETS = $(INLINES) $(BINS) $(MANS)
+
+build/%.sh: %
+	mkdir -p build
+	./inline.sh --in-file $< --out-file $@
+	chmod 755 $@
+
+debian/%.1: build/%
+	./genman.sh $< > $@
+
 default: build
 
-common-build: common-clean
-	mkdir -p build
-	-./inline.sh --in-file km  --out-file build/km
-	-./inline.sh --in-file kc  --out-file build/kc
-	-./inline.sh --in-file kw  --out-file build/kw
-	-./inline.sh --in-file klb --out-file build/klb
-	chmod 755 build/*
-
-common-clean:
-	-rm build/*
-	-rmdir build
+common-build: $(TARGETS)
 
 build: common-build
 	mkdir -p usr/bin
-	cp -f  build/* usr/bin/
-	./genman.sh build/km  > debian/km.1
-	./genman.sh build/kc  > debian/kc.1
-	./genman.sh build/kw  > debian/kw.1
-	./genman.sh build/klb > debian/klb.1
+	cp -f  $(BINS) usr/bin/
 
-clean: common-clean
-	-rm -f debian/*.1 
-	-rm -f usr/bin/*
-	-rmdir usr/bin usr
+clean:
+	rm -f $(TARGETS)
 	-rm -Rf docker/debian/*/build
 	-rm -Rf docker/ubuntu/*/build
+
+distclean: clean
+
+.PHONY: all install uninstall clean distclean
 
 .PHONY: debian build
 debian: 
