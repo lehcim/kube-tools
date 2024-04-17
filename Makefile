@@ -15,10 +15,10 @@ common-clean:
 build: common-build
 	mkdir -p usr/bin
 	cp -f  build/* usr/bin/
-	help2man --no-info usr/bin/kc -n 'Kubernetes controller tool' > debian/kc.1
-	help2man --no-info usr/bin/km -n 'Kubernetes master' > debian/km.1
-	help2man --no-info usr/bin/kw -n 'Kubernetes worker' > debian/kw.1
-	help2man --no-info usr/bin/klb -n 'Kubernetes load-balancer' > debian/klb.1
+	./genman.sh build/km  > debian/km.1
+	./genman.sh build/kc  > debian/kc.1
+	./genman.sh build/kw  > debian/kw.1
+	./genman.sh build/klb > debian/klb.1
 
 clean: common-clean
 	-rm -f debian/*.1 
