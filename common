@@ -529,3 +529,4 @@ function generate_config_archive() {
         /etc/kubernetes/admin.conf > /dev/null 2>&1
     display_message_result "Generating config archive"
 }
+
